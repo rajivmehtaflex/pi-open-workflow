@@ -119,7 +119,15 @@ Expected: the second task is refused with `⛔ Task #2 is blocked by unfinished 
 ```
 After the next file edit, it automatically runs `npm test` (or `pytest`, if the project is Python) and feeds any failures back into the conversation.
 
-### 5. Generate a commit message from staged changes
+### 5. Record manual verification for a non-file-editing task
+
+For work that never edits a source file (a database migration, a data-seeding script), the automated test loop never fires. Ask the agent, in plain chat:
+```
+Once all tasks are done, call record_verification with summary "SELECT COUNT(*) FROM student = 100; all enrollment foreign keys valid" and passed: true.
+```
+Expected: Stage 4 ("Verify") flips from `▸ 4. Verify · tasks – · verification pending` to `✓ 4. Verify`.
+
+### 6. Generate a commit message from staged changes
 
 ```bash
 git add -A
@@ -129,13 +137,13 @@ then in the `pi` session:
 /commit
 ```
 
-### 6. Draft a PR description
+### 7. Draft a PR description
 
 ```
 /pr
 ```
 
-### 7. Launch an isolated research subagent
+### 8. Launch an isolated research subagent
 
 Ask the agent:
 ```
@@ -160,6 +168,7 @@ Watch the subagent telemetry panel appear in the dashboard (`🤖 [explore] Runn
 | `Task` | LLM Tool | Launch an isolated subagent with typed roles (`explore`, `plan`, `general`). |
 | `task_checklist` | LLM Tool | Programmatic task management: add (with `priority`, `dependsOn`), update, list, clear. Dependency-gated — `inprogress` is refused while dependencies are unfinished unless `force: true`. |
 | `ask_user_question` | LLM Tool | Ask the user 1-4 structured clarifying questions (2-4 options each, optional multi-select, free-text escape hatch) when requirements are ambiguous. |
+| `record_verification` | LLM Tool | Record manual verification (summary + pass/fail) when no automated test suite applies to the work just completed — e.g. a database/script-only task with no source-file edits. Requires every checklist task to be done first; sets the same gate the automated post-edit test loop would otherwise set. |
 
 ## License
 
