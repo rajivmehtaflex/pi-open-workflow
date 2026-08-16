@@ -6,10 +6,12 @@
 import type { ExtensionAPI, ExtensionContext, Theme, WorkflowState } from "./types.js";
 import { truncateToWidth } from "./types.js";
 import { renderTaskTable, renderPipelineStrip, renderStatusRows } from "./ui-table.js";
+import { resetDashboardSession } from "./session-state.js";
 
 
 export function registerDashboard(pi: ExtensionAPI, state: WorkflowState) {
   let activeContext: ExtensionContext | null = null;
+  const initialMode = state.mode;
 
   state.refreshUI = () => {
     if (activeContext) updateDashboardWidget(activeContext, state);
@@ -18,16 +20,7 @@ export function registerDashboard(pi: ExtensionAPI, state: WorkflowState) {
   pi.on("session_start", async (_event: any, ctx: ExtensionContext) => {
     activeContext = ctx;
     // Full reset on every session start — no state leaks across sessions
-    state.currentStage = 0;
-    state.tasks = [];
-    state.completedStages = new Set();
-    state.activeSubagents.clear();
-    state.lastSubagent = undefined;
-    state.testState = { status: "idle" };
-    state.workflowPhase = "idle";
-    state.mode = "plan";
-    state.permissionMode = "default";
-    state.sessionStartTime = Date.now();
+    resetDashboardSession(state, initialMode);
     if (ctx.ui.setWidget) ctx.ui.setWidget("openflow-dashboard", undefined);
     state.refreshUI?.();
   });

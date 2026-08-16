@@ -15,13 +15,17 @@ import { registerDashboard } from "./ui-dashboard.js";
 import { registerAskUserQuestion } from "./ask-user.js";
 import { registerWorkflowPhase } from "./workflow-phase.js";
 import { registerManualVerification } from "./verification.js";
+import { SUBAGENT_MODE_ENV } from "./subagent-mode.js";
 
 export * from "./types.js";
 export * from "./ui-dashboard.js";
 
 export default function (pi: ExtensionAPI) {
+  // Subagent sessions spawned by the Task tool inherit the parent's mode via env
+  // (default remains Plan Mode for safe exploration of fresh top-level sessions).
+  const inheritedMode = process.env[SUBAGENT_MODE_ENV] === "act" ? "act" : "plan";
   const state: WorkflowState = {
-    mode: "plan", // Default to Plan Mode for safe exploration
+    mode: inheritedMode,
     permissionMode: "default",
     currentStage: 0, // Clean slate / idle on startup
     stageStartTime: Date.now(),

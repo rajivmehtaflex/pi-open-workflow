@@ -1,5 +1,6 @@
 import type { ExtensionAPI, ExtensionContext, WorkflowState, SubagentInfo } from "./types.js";
 import { Type } from "./types.js";
+import { resolveSubagentMode, readOnlyNotice, SUBAGENT_MODE_ENV, type ParentMode } from "./subagent-mode.js";
 import { spawn } from "child_process";
 
 interface SubagentResult {
@@ -8,7 +9,7 @@ interface SubagentResult {
   elapsed: number;
 }
 
-function runSubagentProcess(task: string, role: string, model: string | undefined, cwd: string): Promise<SubagentResult> {
+function runSubagentProcess(task: string, role: string, model: string | undefined, cwd: string, parentMode: ParentMode): Promise<SubagentResult> {
   return new Promise((resolve) => {
     const startTime = Date.now();
     const args = ["-p", "--no-session"];
@@ -17,7 +18,7 @@ function runSubagentProcess(task: string, role: string, model: string | undefine
 
     const child = spawn("pi", args, {
       cwd,
-      env: { ...process.env },
+      env: { ...process.env, [SUBAGENT_MODE_ENV]: resolveSubagentMode(role, parentMode) },
       stdio: ["ignore", "pipe", "pipe"],
     });
 
@@ -83,7 +84,7 @@ export function registerSubagentTask(pi: ExtensionAPI, state: WorkflowState) {
       }
 
       const cwd = ctx ? ctx.cwd : process.cwd();
-      const result = await runSubagentProcess(task, role, model, cwd);
+      const result = await runSubagentProcess(task, role, model, cwd, state.mode);
       const isOk = result.exitCode === 0;
 
       const completedInfo: SubagentInfo = {
@@ -100,6 +101,7 @@ export function registerSubagentTask(pi: ExtensionAPI, state: WorkflowState) {
 
       if (ctx) ctx.ui.setStatus("subagent", `🤖 Subagent [${role}] ${isOk ? "done" : "failed"} (${Math.round(result.elapsed / 1000)}s)`);
 
+      const notice = readOnlyNotice(role, state.mode) ?? "";
       const truncated = result.output.length > 6000
         ? result.output.slice(0, 6000) + "\n... [Output truncated for context efficiency]"
         : result.output;
@@ -108,7 +110,7 @@ export function registerSubagentTask(pi: ExtensionAPI, state: WorkflowState) {
         content: [
           {
             type: "text",
-            text: `### Subagent [${role}] Execution Result (${Math.round(result.elapsed / 1000)}s):\n\n${truncated || "Subagent finished with no output."}`,
+            text: `### Subagent [${role}] Execution Result (${Math.round(result.elapsed / 1000)}s):\n\n${truncated || "Subagent finished with no output."}${notice}`,
           },
         ],
         details: {
