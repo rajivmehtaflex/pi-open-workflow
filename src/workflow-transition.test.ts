@@ -85,3 +85,24 @@ test("no tasks do not advance", () => {
   assert.equal(result.currentStage, 3);
   assert.deepEqual(result.completedStages, new Set<number>());
 });
+
+test("stage 4 completes with zero stamped tasks once all work is done and tests passed", () => {
+  const result = transition({
+    currentStage: 3,
+    tasks: [task(1, 2), task(2, 2)], // no task stamped stage 4 — this is the actual bug scenario
+    testStatus: "passed",
+  });
+
+  assert.equal(result.currentStage, 4);
+  assert.equal(result.completedStages.has(4), true);
+});
+
+test("stage 4 does not complete if tasks remain unfinished, even with tests passed", () => {
+  const result = transition({
+    currentStage: 3,
+    tasks: [task(1, 2), task(2, 2, "inprogress")],
+    testStatus: "passed",
+  });
+
+  assert.equal(result.completedStages.has(4), false);
+});
