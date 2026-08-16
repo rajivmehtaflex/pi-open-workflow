@@ -14,6 +14,7 @@ import { registerStatusline } from "./statusline.js";
 import { registerDashboard } from "./ui-dashboard.js";
 import { registerAskUserQuestion } from "./ask-user.js";
 import { registerWorkflowPhase } from "./workflow-phase.js";
+import { registerManualVerification } from "./verification.js";
 
 export * from "./types.js";
 export * from "./ui-dashboard.js";
@@ -53,4 +54,5 @@ export default function (pi: ExtensionAPI) {
   registerStatusline(pi, state);
   registerAskUserQuestion(pi, state);
   registerWorkflowPhase(pi, state);
+  registerManualVerification(pi, state);
 }
