@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -9,17 +9,26 @@ import {
   resolveProjectRoot,
 } from "./test-loop-core.ts";
 
-test("nearest g-proj-exp package root wins over the workspace pyproject", () => {
-  const changedFile = "/Users/rajivmehtapy/Documents/Dev/pi-local-dev/g-proj-exp/src/task-store.js";
-  const root = resolveProjectRoot(changedFile);
+test("nearest nested package root wins over the parent workspace manifest", () => {
+  const workspace = mkdtempSync(join(tmpdir(), "test-loop-core-nested-"));
+  try {
+    writeFileSync(join(workspace, "pyproject.toml"), "[project]\nname = 'workspace'\n");
+    const nested = join(workspace, "nested-pkg");
+    mkdirSync(nested);
+    writeFileSync(join(nested, "package.json"), JSON.stringify({ scripts: { test: "node --test" } }));
+    mkdirSync(join(nested, "src"));
 
-  assert.equal(root, "/Users/rajivmehtapy/Documents/Dev/pi-local-dev/g-proj-exp");
-  assert.equal(resolveProjectRoot("/Users/rajivmehtapy/Documents/Dev/pi-local-dev/g-proj-exp/src"), root);
-  assert.deepEqual(detectTestCommand(root), {
-    command: "npm test",
-    cwd: root,
-    framework: "node",
-  });
+    const root = resolveProjectRoot(join(nested, "src", "task-store.js"));
+    assert.equal(root, nested);
+    assert.equal(resolveProjectRoot(join(nested, "src")), root);
+    assert.deepEqual(detectTestCommand(root), {
+      command: "npm test",
+      cwd: nested,
+      framework: "node",
+    });
+  } finally {
+    rmSync(workspace, { recursive: true, force: true });
+  }
 });
 
 test("npm test descriptor does not append --silent", () => {

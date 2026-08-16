@@ -75,7 +75,6 @@ export interface Theme {
   fg(color: string, text: string): string;
   bg(color: string, text: string): string;
   bold(text: string): string;
-  dim(text: string): string;
   [key: string]: any;
 }
 
@@ -146,32 +145,9 @@ export function isToolCallEventType(toolName: string, event: any): boolean {
   return event && (event.toolName === toolName || event.name === toolName);
 }
 
-export function visibleWidth(str: string): number {
-  return str.replace(/\x1b\[[0-9;]*m/g, "").length;
-}
-
-export function truncateToWidth(str: string, width: number): string {
-  if (visibleWidth(str) <= width) return str;
-  let len = 0;
-  let result = "";
-  let inEscape = false;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === "\x1b") {
-      inEscape = true;
-      result += str[i];
-      continue;
-    }
-    if (inEscape) {
-      result += str[i];
-      if (str[i] === "m") inEscape = false;
-      continue;
-    }
-    if (len >= width - 3) {
-      result += "...";
-      break;
-    }
-    result += str[i];
-    len++;
-  }
-  return result;
-}
+// visibleWidth/truncateToWidth used to measure UTF-16 code units, which undercounts
+// wide glyphs like ⛔ (one unit, two terminal cells) and misaligns table columns by
+// one cell whenever such a glyph appears. width.ts fixes this; re-exported here under
+// the original names so existing importers (statusline.ts, ui-dashboard.ts) are
+// unaffected.
+export { displayWidth as visibleWidth, truncateToWidth } from "./width.js";

@@ -13,7 +13,7 @@ A full **open-source agentic workflow experience** packaged for the Pi Coding Ag
 * **Smart Compaction Guard**: Preserves active tasks and project rules across context compaction events.
 * **Subagent Task Tool**: Native `Task` tool spawning isolated child `pi` processes for deep research without cluttering primary context.
 * **Semantic Git Lifecycle** (`/commit`, `/pr`): Structured commit message generation and PR drafting from staged changes.
-* **Hierarchical Tree-Grid Dashboard**: Stages as parent rows, tasks nested underneath with priority chips and dependency-blocked badges.
+* **Tabular Task Dashboard**: Borderless, column-aligned task table (`# / PRI / STATUS / STAGE / TASK / DEPS`) with glyph+text status cells, a five-stage pipeline strip that always shows every stage, and width-aware truncation that never misaligns on wide glyphs like ⛔.
 * **Spec-Driven `/workflow`**: `ask_user_question` tool + `/workflow` slash command chaining Clarify → Research/Plan → Decompose → Execute → Verify.
 * **Responsive Statusline**: Footer displaying Model, Mode (`[PLAN]` / `[ACT]`), permission levels, blocked-task count, session clock (`[hh:mm:ss]`), and context usage meter.
 
@@ -101,7 +101,7 @@ Ask a question, e.g. "Add a `priority` column to the sqlite task store." The age
 Watch for:
 - `ask_user_question` firing in Phase 1 if the request is ambiguous — answer via the numbered dialog or type a custom answer.
 - `task_checklist` building a dependency-ordered task graph in Phase 3 (priority chips `[P0]`/`[P1]`, `dependsOn` gating).
-- The tree-grid dashboard widget rendering stages (`Research`/`Plan`/`Act`/`Verify`/`Commit`) with tasks nested underneath as they execute.
+- The tabular dashboard widget rendering one row per task plus a five-stage pipeline strip (`Research`/`Plan`/`Act`/`Verify`/`Commit`) as tasks execute.
 - The statusline footer showing `[ACT: Act 3/5]`, the `blocked:N` badge if a task is dependency-blocked, and a ticking `[hh:mm:ss]` session clock.
 
 ### 3. Manage tasks directly (without going through `/workflow`)
