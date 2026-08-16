@@ -1,0 +1,38 @@
+# Damage Control & Safety Rules for Claude Code Workflow
+bashToolPatterns:
+  - pattern: "(^|\\s|;)rm\\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive\\s+--force)\\s+"
+    reason: "Recursive forced deletion (rm -rf) detected"
+    ask: true
+  - pattern: "git\\s+reset\\s+--hard"
+    reason: "Destructive git reset --hard detected"
+    ask: true
+  - pattern: "git\\s+clean\\s+-fd"
+    reason: "Destructive git clean -fd detected"
+    ask: true
+  - pattern: "DROP\\s+(DATABASE|TABLE)"
+    reason: "Destructive database DROP statement detected"
+    ask: true
+  - pattern: "aws\\s+s3\\s+rm\\s+.*--recursive"
+    reason: "AWS S3 recursive delete detected"
+    ask: true
+
+zeroAccessPaths:
+  - ".env"
+  - ".env.local"
+  - ".env.production"
+  - "~/.ssh"
+  - "*.pem"
+  - "*.key"
+
+readOnlyPaths:
+  - "package-lock.json"
+  - "bun.lock"
+  - "uv.lock"
+  - "/etc"
+
+noDeletePaths:
+  - ".git"
+  - "Dockerfile"
+  - "README.md"
+  - "pyproject.toml"
+  - "package.json"

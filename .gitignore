@@ -1,0 +1,14 @@
+# Build output (regenerate with `npm run build`)
+dist/
+
+# Installed dependencies (regenerate with `npm install`)
+node_modules/
+
+# SQLite runtime artifacts (db/task-store.ts and friends)
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# npm debug logs
+npm-debug.log*

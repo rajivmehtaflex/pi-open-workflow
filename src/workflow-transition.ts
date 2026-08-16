@@ -1,0 +1,24 @@
+import type { PipelineStage, TestExecutionState, WorkflowTask } from "./types.ts";
+
+export interface WorkflowTransitionState {
+  currentStage: PipelineStage;
+  completedStages: Set<number>;
+  tasks: WorkflowTask[];
+  testStatus: TestExecutionState["status"];
+}
+
+export function advanceAfterTaskUpdate(state: WorkflowTransitionState): WorkflowTransitionState {
+  const completedStages = new Set(state.completedStages);
+  const stampedStages = new Set(state.tasks.map((task) => task.stage ?? 2));
+
+  for (const stage of stampedStages) {
+    const stageTasks = state.tasks.filter((task) => (task.stage ?? 2) === stage);
+    if (!stageTasks.length || !stageTasks.every((task) => task.status === "done")) continue;
+    if (stage !== 4 || state.testStatus === "passed") completedStages.add(stage);
+  }
+
+  const allTasksDone = state.tasks.length > 0 && state.tasks.every((task) => task.status === "done");
+  const currentStage = allTasksDone && state.currentStage < 4 ? 4 : state.currentStage;
+
+  return { ...state, currentStage, completedStages };
+}

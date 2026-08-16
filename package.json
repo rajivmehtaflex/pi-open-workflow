@@ -1,0 +1,57 @@
+{
+  "name": "pi-open-workflow",
+  "version": "0.1.0",
+  "description": "Full open-source agentic workflow experience for Pi: Plan Mode, 5-mode safety gating, post-edit test verification loop, cascading CLAUDE.md/AGENTS.md memory, smart compaction, subagent Task tool, and semantic git commands.",
+  "type": "module",
+  "keywords": [
+    "pi-package"
+  ],
+  "license": "MIT",
+  "author": "Rajiv Mehta <rajiv.mehta@live.in>",
+  "homepage": "https://github.com/rajivmehtaflex/pi-open-workflow#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajivmehtaflex/pi-open-workflow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rajivmehtaflex/pi-open-workflow/issues"
+  },
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./types": "./dist/src/types.js",
+    "./db/task-store": "./dist/src/db/task-store.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "skills",
+    "prompts",
+    "config"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "test": "node --test \"src/**/*.test.ts\" \"test/**/*.test.ts\""
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ],
+    "skills": [
+      "./skills/"
+    ],
+    "prompts": [
+      "./prompts/*.md"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "^1.0.0",
+    "@earendil-works/pi-coding-agent": "^1.0.0",
+    "@earendil-works/pi-tui": "^1.0.0",
+    "typebox": "^0.32.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
