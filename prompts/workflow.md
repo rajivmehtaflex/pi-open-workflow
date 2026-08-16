@@ -1,5 +1,5 @@
 ---
-description: Spec-driven workflow — clarify, research/plan, decompose to a dependency graph, then execute
+description: Spec-driven workflow — clarify, research/plan, decompose to a dependency graph, execute, then verify
 argument-hint: "<task:string>"
 ---
 You are running the structured spec-driven workflow. Follow these phases IN ORDER; do not skip ahead. Use `workflow_phase` at every boundary and only describe a phase as changed after its tool result confirms the transition.
@@ -22,3 +22,10 @@ Add tasks in dependency order. Sub-steps of a bigger task = separate tasks that 
 
 ## Phase 4 — Execute
 At the phase boundary, call `workflow_phase` with action `advance`; continue only if its result confirms `execute`. Work tasks in topological order — `update` to `inprogress` is REFUSED while dependsOn tasks are not done. Mark each `inprogress` when starting, `done` when finished. Switch to Act Mode (/act) before editing files. If a task reveals a wrong assumption, stop and call `ask_user_question` again before proceeding.
+
+## Phase 5 — Verify
+At the phase boundary, call `workflow_phase` with action `advance`; continue only if its result confirms `verify`. Determine whether this work touched any source files this session (i.e. whether `edit` or `write` tools were used):
+- If yes, and the project has an automated test suite, the post-edit test loop already ran automatically. If it reports tests passed, call `workflow_phase` with action `advance` to reach `complete`. If it reports a failure, fix the regression before advancing.
+- If no source files were edited (e.g. this was a database, script, or data-seeding task with nothing for an automated test suite to check), perform an explicit manual check yourself -- query the data, count rows, spot-check output, confirm foreign keys/invariants -- then call `record_verification` with `passed` (true/false) and a `summary` describing exactly what you checked. Only after that call succeeds, call `workflow_phase` with action `advance` to reach `complete`.
+
+Do not call `workflow_phase advance` into `complete` without one of the two paths above having actually produced a passing verification -- a fabricated "looks good" is not verification.
