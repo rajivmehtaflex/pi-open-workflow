@@ -14,7 +14,7 @@ A full **open-source agentic workflow experience** packaged for the Pi Coding Ag
 * **Subagent Task Tool**: Native `Task` tool spawning isolated child `pi` processes for deep research without cluttering primary context.
 * **Semantic Git Lifecycle** (`/commit`, `/pr`): Structured commit message generation and PR drafting from staged changes.
 * **Hierarchical Tree-Grid Dashboard**: Stages as parent rows, tasks nested underneath with priority chips and dependency-blocked badges.
-* **Spec-Driven `/workflow`**: `ask_user_question` tool + `/workflow` slash command chaining Clarify → Research/Plan → Decompose → Execute.
+* **Spec-Driven `/workflow`**: `ask_user_question` tool + `/workflow` slash command chaining Clarify → Research/Plan → Decompose → Execute → Verify.
 * **Responsive Statusline**: Footer displaying Model, Mode (`[PLAN]` / `[ACT]`), permission levels, blocked-task count, session clock (`[hh:mm:ss]`), and context usage meter.
 
 ---
@@ -158,7 +158,7 @@ Watch the subagent telemetry panel appear in the dashboard (`🤖 [explore] Runn
 | Command / Tool | Type | Description |
 | :--- | :--- | :--- |
 | `/openflow` | Slash Command | Autonomous end-to-end master workflow (`/openflow <goal>`). |
-| `/workflow` | Slash Command | Spec-driven pipeline: Clarify → Research/Plan → Decompose → Execute (`/workflow <task>`). |
+| `/workflow` | Slash Command | Spec-driven pipeline: Clarify → Research/Plan → Decompose → Execute → Verify (`/workflow <task>`). |
 | `/plan` | Slash Command | Enter Plan Mode (read-only exploration). Idempotent — safe to run when already in Plan Mode. |
 | `/act` | Slash Command | Enter Act Mode (execution: write & edit enabled). Idempotent. |
 | `/permission` | Slash Command | Set permission level (`plan`, `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`). |

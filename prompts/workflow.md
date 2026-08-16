@@ -25,7 +25,7 @@ At the phase boundary, call `workflow_phase` with action `advance`; continue onl
 
 ## Phase 5 — Verify
 At the phase boundary, call `workflow_phase` with action `advance`; continue only if its result confirms `verify`. Determine whether this work touched any source files this session (i.e. whether `edit` or `write` tools were used):
-- If yes, and the project has an automated test suite, the post-edit test loop already ran automatically. If it reports tests passed, call `workflow_phase` with action `advance` to reach `complete`. If it reports a failure, fix the regression before advancing.
+- If yes, and the project has an automated test suite, the post-edit test loop already ran automatically. If it reports tests passed, call `workflow_phase` with action `advance` to reach `complete`. If it reports a failure, fix the regression before advancing. If it reports no test command is configured, or no tests were collected, fall back to the manual verification path below -- perform an explicit check yourself and call `record_verification`, exactly as if no source files had been edited.
 - If no source files were edited (e.g. this was a database, script, or data-seeding task with nothing for an automated test suite to check), perform an explicit manual check yourself -- query the data, count rows, spot-check output, confirm foreign keys/invariants -- then call `record_verification` with `passed` (true/false) and a `summary` describing exactly what you checked. Only after that call succeeds, call `workflow_phase` with action `advance` to reach `complete`.
 
 Do not call `workflow_phase advance` into `complete` without one of the two paths above having actually produced a passing verification -- a fabricated "looks good" is not verification.

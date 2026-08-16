@@ -12,7 +12,9 @@ export function advanceAfterTaskUpdate(state: WorkflowTransitionState): Workflow
   const stampedStages = new Set(state.tasks.map((task) => task.stage ?? 2));
 
   for (const stage of stampedStages) {
-    if (stage === 4) continue; // Verify is a meta-stage: gated by test status below, never by a stamped task
+    // A task stamped stage 4 (reachable once currentStage auto-jumps to 4) must not gate Verify's
+    // completion on its own status -- the meta-gate below is the only path to completing stage 4.
+    if (stage === 4) continue;
     const stageTasks = state.tasks.filter((task) => (task.stage ?? 2) === stage);
     if (!stageTasks.length || !stageTasks.every((task) => task.status === "done")) continue;
     completedStages.add(stage);
