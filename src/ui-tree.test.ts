@@ -63,6 +63,13 @@ test("renderTreeGrid: current Verify with no tasks is explicitly pending", () =>
   assert.ok(flat.includes("verification pending"), "empty Verify row explains why it is shown");
 });
 
+test("renderTreeGrid: completed Verify (stage 4) shows ✓, not pending", () => {
+  const lines = renderTreeGrid({ currentStage: 4, completedStages: new Set([1, 2, 3, 4]), tasks: [] }, 120, theme);
+  const flat = lines.join("\n");
+  assert.ok(flat.includes("✓ 4. Verify"), "Verify shows the completed check, not the current-stage marker");
+  assert.ok(!flat.includes("verification pending"), "completed Verify must not show the pending explanation");
+});
+
 test("getTestStateBanner: no-tests is a warning, not a regression", () => {
   const banner = getTestStateBanner({ status: "no-tests", command: "npm test", lastError: "\nno tests ran in 0.01s" });
   assert.equal(banner?.label, "🧪 Test Loop: ⚠ NO TESTS COLLECTED");
