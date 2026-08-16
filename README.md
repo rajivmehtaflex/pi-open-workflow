@@ -31,7 +31,7 @@ pi --version       # any recent Pi CLI build
 ### 1. Install the extension into your project
 
 ```bash
-pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.0
+pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.1
 ```
 
 This adds an entry to your project's `.pi/settings.json` under `"packages"`. Verify it landed:
@@ -44,7 +44,7 @@ Expected output includes:
 
 ```
 Project packages:
-  git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.0
+  git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.1
     <local clone path>
 ```
 
