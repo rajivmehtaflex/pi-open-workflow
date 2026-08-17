@@ -14,15 +14,17 @@ test("DEFAULT_EXA_MCP_CONFIG contains Exa endpoint and directTools", () => {
   assert.equal(DEFAULT_EXA_MCP_CONFIG.mcpServers.exa.directTools, true);
 });
 
-test("getExternalSearchGuidelines contains key search, temporal, and delivery rules", () => {
-  const guidelines = getExternalSearchGuidelines();
+test("getExternalSearchGuidelines contains key search, real-time date, and delivery rules", () => {
+  const fixedDate = new Date("2026-08-17T07:00:00.000Z");
+  const guidelines = getExternalSearchGuidelines(fixedDate);
   assert.ok(guidelines.includes("External Knowledge & Search"));
   assert.ok(guidelines.includes("exa"));
-  assert.ok(guidelines.includes("Temporal Grounding"));
+  assert.ok(guidelines.includes("Today's Date is **2026-08-17**"));
+  assert.ok(guidelines.includes("Year: **2026**"));
   assert.ok(guidelines.includes("Direct Output Delivery"));
 });
 
-test("registerExternalSearch registers before_agent_start hook that injects guidelines", async () => {
+test("registerExternalSearch registers before_agent_start hook that injects dynamic guidelines", async () => {
   const registeredEvents: Record<string, Function[]> = {};
 
   const mockPi: ExtensionAPI = {
@@ -47,5 +49,6 @@ test("registerExternalSearch registers before_agent_start hook that injects guid
 
   assert.ok(result);
   assert.ok(result.systemPrompt);
-  assert.ok(result.systemPrompt.includes("External Knowledge, Internet Search & Temporal Guidelines"));
+  assert.ok(result.systemPrompt.includes("External Knowledge, Real-Time Temporal Grounding & Internet Search"));
+  assert.ok(result.systemPrompt.includes("Today's Date is"));
 });
