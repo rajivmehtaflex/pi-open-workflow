@@ -21,6 +21,7 @@ import { SUBAGENT_MODE_ENV } from "./subagent-mode.js";
 export * from "./types.js";
 export * from "./ui-dashboard.js";
 export * from "./external-search.js";
+export * from "./system-metadata.js";
 
 export default function (pi: ExtensionAPI) {
   // Subagent sessions spawned by the Task tool inherit the parent's mode via env

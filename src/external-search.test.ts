@@ -3,7 +3,6 @@ import { test } from "node:test";
 
 import {
   DEFAULT_EXA_MCP_CONFIG,
-  getExternalSearchGuidelines,
   registerExternalSearch,
 } from "./external-search.ts";
 import type { ExtensionAPI, ExtensionContext, WorkflowState } from "./types.ts";
@@ -14,17 +13,7 @@ test("DEFAULT_EXA_MCP_CONFIG contains Exa endpoint and directTools", () => {
   assert.equal(DEFAULT_EXA_MCP_CONFIG.mcpServers.exa.directTools, true);
 });
 
-test("getExternalSearchGuidelines contains key search, real-time date, and delivery rules", () => {
-  const fixedDate = new Date("2026-08-17T07:00:00.000Z");
-  const guidelines = getExternalSearchGuidelines(fixedDate);
-  assert.ok(guidelines.includes("External Knowledge & Search"));
-  assert.ok(guidelines.includes("exa"));
-  assert.ok(guidelines.includes("Today's Date is **2026-08-17**"));
-  assert.ok(guidelines.includes("Year: **2026**"));
-  assert.ok(guidelines.includes("Direct Output Delivery"));
-});
-
-test("registerExternalSearch registers before_agent_start hook that injects dynamic guidelines", async () => {
+test("registerExternalSearch registers before_agent_start hook that injects metadata and guidelines", async () => {
   const registeredEvents: Record<string, Function[]> = {};
 
   const mockPi: ExtensionAPI = {
@@ -36,7 +25,7 @@ test("registerExternalSearch registers before_agent_start hook that injects dyna
     registerCommand: () => {},
   };
 
-  const mockState = {} as WorkflowState;
+  const mockState = { mode: "act" } as WorkflowState;
 
   registerExternalSearch(mockPi, mockState);
 
@@ -44,11 +33,13 @@ test("registerExternalSearch registers before_agent_start hook that injects dyna
   assert.ok(registeredEvents["before_agent_start"].length > 0);
 
   const handler = registeredEvents["before_agent_start"][0];
-  const mockCtx = { cwd: "/mock/dir" } as ExtensionContext;
+  const mockCtx = { cwd: process.cwd() } as ExtensionContext;
   const result = await handler({}, mockCtx);
 
   assert.ok(result);
   assert.ok(result.systemPrompt);
-  assert.ok(result.systemPrompt.includes("External Knowledge, Real-Time Temporal Grounding & Internet Search"));
+  assert.ok(result.systemPrompt.includes("## Environment & Runtime Metadata"));
   assert.ok(result.systemPrompt.includes("Today's Date is"));
+  assert.ok(result.systemPrompt.includes("Working Directory:"));
+  assert.ok(result.systemPrompt.includes("## External Knowledge & Internet Search Guidelines"));
 });
