@@ -1,6 +1,6 @@
 {
   "name": "pi-open-workflow",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Full open-source agentic workflow experience for Pi: Plan Mode, 5-mode safety gating, post-edit test verification loop, cascading CLAUDE.md/AGENTS.md memory, smart compaction, subagent Task tool, and semantic git commands.",
   "type": "module",
   "keywords": [

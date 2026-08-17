@@ -15,6 +15,7 @@ A full **open-source agentic workflow experience** packaged for the Pi Coding Ag
 * **Semantic Git Lifecycle** (`/commit`, `/pr`): Structured commit message generation and PR drafting from staged changes.
 * **Tabular Task Dashboard**: Borderless, column-aligned task table (`# / PRI / STATUS / STAGE / TASK / DEPS`) with glyph+text status cells, a five-stage pipeline strip that always shows every stage, and width-aware truncation that never misaligns on wide glyphs like ⛔.
 * **Spec-Driven `/workflow`**: `ask_user_question` tool + `/workflow` slash command chaining Clarify → Research/Plan → Decompose → Execute → Verify.
+* **Built-in Ollama Cloud Provider**: Built-in registration for `ollama-cloud` providing support for Nemotron 3, Gemma 4, Qwen 3.5, Mistral Large 3, and GPT-oss models with thinking and tool support.
 * **Responsive Statusline**: Footer displaying Model, Mode (`[PLAN]` / `[ACT]`), permission levels, blocked-task count, session clock (`[hh:mm:ss]`), and context usage meter.
 
 ---
@@ -31,7 +32,7 @@ pi --version       # any recent Pi CLI build
 ### 1. Install the extension into your project
 
 ```bash
-pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.4
+pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.8
 ```
 
 This adds an entry to your project's `.pi/settings.json` under `"packages"`. Verify it landed:

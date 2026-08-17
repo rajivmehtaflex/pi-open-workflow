@@ -16,12 +16,14 @@ import { registerAskUserQuestion } from "./ask-user.js";
 import { registerWorkflowPhase } from "./workflow-phase.js";
 import { registerManualVerification } from "./verification.js";
 import { registerExternalSearch } from "./external-search.js";
+import { registerOllamaCloud } from "./ollama-cloud.js";
 import { SUBAGENT_MODE_ENV } from "./subagent-mode.js";
 
 export * from "./types.js";
 export * from "./ui-dashboard.js";
 export * from "./external-search.js";
 export * from "./system-metadata.js";
+export * from "./ollama-cloud.js";
 
 export default function (pi: ExtensionAPI) {
   // Subagent sessions spawned by the Task tool inherit the parent's mode via env
@@ -63,4 +65,5 @@ export default function (pi: ExtensionAPI) {
   registerWorkflowPhase(pi, state);
   registerManualVerification(pi, state);
   registerExternalSearch(pi, state);
+  registerOllamaCloud(pi, state);
 }

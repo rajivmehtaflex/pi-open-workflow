@@ -128,6 +128,7 @@ export interface ExtensionAPI {
   registerCommand(name: string, command: CommandDefinition): void;
   registerShortcut?(shortcut: string, options: { description: string; handler: (ctx: ExtensionContext) => void }): void;
   sendUserMessage?(message: string): void;
+  registerProvider?(name: string | any, providerConfig?: any): void;
 }
 
 // Standalone JSON Schema builder (compatible with TypeBox syntax)
