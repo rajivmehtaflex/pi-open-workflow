@@ -15,10 +15,12 @@ import { registerDashboard } from "./ui-dashboard.js";
 import { registerAskUserQuestion } from "./ask-user.js";
 import { registerWorkflowPhase } from "./workflow-phase.js";
 import { registerManualVerification } from "./verification.js";
+import { registerExternalSearch } from "./external-search.js";
 import { SUBAGENT_MODE_ENV } from "./subagent-mode.js";
 
 export * from "./types.js";
 export * from "./ui-dashboard.js";
+export * from "./external-search.js";
 
 export default function (pi: ExtensionAPI) {
   // Subagent sessions spawned by the Task tool inherit the parent's mode via env
@@ -59,4 +61,5 @@ export default function (pi: ExtensionAPI) {
   registerAskUserQuestion(pi, state);
   registerWorkflowPhase(pi, state);
   registerManualVerification(pi, state);
+  registerExternalSearch(pi, state);
 }

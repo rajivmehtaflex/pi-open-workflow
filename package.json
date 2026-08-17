@@ -44,6 +44,9 @@
       "./prompts/*.md"
     ]
   },
+  "dependencies": {
+    "pi-mcp-adapter": "^2.26.0"
+  },
   "peerDependencies": {
     "@earendil-works/pi-ai": "^0.84.0",
     "@earendil-works/pi-coding-agent": "^0.84.0",
@@ -51,6 +54,7 @@
     "typebox": "^1.0.0"
   },
   "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
     "@types/node": "^20.0.0",
     "typescript": "^5.4.0"
   }
