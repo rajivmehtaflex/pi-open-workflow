@@ -1,176 +1,183 @@
 # pi-open-workflow
 
-A full **open-source agentic workflow experience** packaged for the Pi Coding Agent.
+[![Release](https://img.shields.io/badge/release-v0.1.8-blue.svg)](https://github.com/rajivmehtaflex/pi-open-workflow/releases/tag/v0.1.8)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org)
+[![Pi Coding Agent](https://img.shields.io/badge/Pi-Coding%20Agent-purple.svg)](https://pi.dev)
+
+A complete **open-source agentic workflow harness** for the [Pi Coding Agent](https://pi.dev). `pi-open-workflow` brings spec-driven execution, Plan/Act modes, interactive questionnaires, automated test verification, hierarchical memory, isolated research subagents, and built-in cloud model provider integration directly into your Pi sessions.
 
 ---
 
-## Features
+## 🌟 Key Features
 
-* **Plan Mode & Task Discipline** (`/plan`, `/act`): Idempotent read-only exploration and plan drafting, separate from execution mode, with structured dependency-aware task checklists.
-* **5-Mode Safety & Sandboxing** (`/permission`): Path-based access control and dangerous bash command screening with user confirmation dialogs.
-* **Automated Post-Edit Test Loop** (`/autotest`): Automatically executes `pytest` or `npm test` after file edits and feeds regression errors back to the model.
-* **Cascading Project Memory**: Hierarchically loads and injects `~/.claude/CLAUDE.md`, `./CLAUDE.md`, and `./AGENTS.md` instructions into every turn.
-* **Smart Compaction Guard**: Preserves active tasks and project rules across context compaction events.
-* **Subagent Task Tool**: Native `Task` tool spawning isolated child `pi` processes for deep research without cluttering primary context.
-* **Semantic Git Lifecycle** (`/commit`, `/pr`): Structured commit message generation and PR drafting from staged changes.
-* **Tabular Task Dashboard**: Borderless, column-aligned task table (`# / PRI / STATUS / STAGE / TASK / DEPS`) with glyph+text status cells, a five-stage pipeline strip that always shows every stage, and width-aware truncation that never misaligns on wide glyphs like ⛔.
-* **Spec-Driven `/workflow`**: `ask_user_question` tool + `/workflow` slash command chaining Clarify → Research/Plan → Decompose → Execute → Verify.
-* **Built-in Ollama Cloud Provider**: Built-in registration for `ollama-cloud` providing support for Nemotron 3, Gemma 4, Qwen 3.5, Mistral Large 3, and GPT-oss models with thinking and tool support.
-* **Responsive Statusline**: Footer displaying Model, Mode (`[PLAN]` / `[ACT]`), permission levels, blocked-task count, session clock (`[hh:mm:ss]`), and context usage meter.
+* **🎯 Plan Mode & Act Mode (`/plan`, `/act`)**: Idempotent read-only exploration and plan drafting separate from execution mode, enforced with path and tool safety guards.
+* **📋 Spec-Driven 5-Phase Pipeline (`/workflow`, `/openflow`)**: Structured lifecycle chaining **Clarify → Research/Plan → Decompose → Execute → Verify** with strict phase-transition gating.
+* **📊 Real-Time Tabular Task Dashboard**: Borderless, column-aligned task table (`# / PRI / STATUS / STAGE / TASK / DEPS`) with glyph+text status cells, 5-stage pipeline strip, and width-aware truncation that handles wide unicode glyphs seamlessly.
+* **🛡️ 5-Mode Safety & Damage Control (`/permission`)**: Granular security controls (`plan`, `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`) with bash screening and protected path boundaries (`zeroAccess`, `readOnly`, `noDelete`).
+* **🧪 Automated Post-Edit Test Loop (`/autotest`)**: Automatically executes `pytest` or `npm test` after file edits and feeds regression errors directly back to the model.
+* **✅ Manual Verification Gate (`record_verification`)**: Record verified assertions for database migrations, config tweaks, or script runs to clear the verification stage without source edits.
+* **🤖 Isolated Subagent Task Tool (`Task`)**: Spawns isolated child `pi` processes for deep research without polluting your main session context, complete with live telemetry monitoring.
+* **❓ Interactive Questionnaires (`ask_user_question`)**: Structured modal dialogs for clarifying ambiguous requirements (single-select, multi-select, free-text write-in).
+* **🧠 Cascading Project Memory & Compaction Guard**: Automatically cascades instructions from `~/.claude/CLAUDE.md`, `./CLAUDE.md`, and `./AGENTS.md`, and preserves task checklists across context compaction events.
+* **🌐 Dynamic Runtime Environment Grounding**: Injects live UTC timestamps, host OS, architecture, and toolchain metadata (Node, Python, Rust, Go) into model prompts.
+* **☁️ Built-in Ollama Cloud Provider**: Instant zero-config support for 8 curated models (Gemma 4, Nemotron 3, Qwen 3.5, GPT-oss, Mistral Large 3) with thinking and cost accounting.
+* **🐙 Semantic Git Lifecycle (`/commit`, `/pr`)**: Automated conventional commit message generation and pull request drafting from staged changes.
 
 ---
 
-## Installation
+## 📦 Installation
 
 ### Prerequisites
+* **Node.js**: `>= 20.0.0` (utilizes native `node:sqlite` and `node:test`)
+* **Pi Coding Agent**: Installed and accessible in your `$PATH`
+
+### 1. Install at Project Level (Recommended)
+Install directly into your current workspace:
 
 ```bash
-node --version    # >= 20 required (node:sqlite, node --test)
-pi --version       # any recent Pi CLI build
+pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.8 -l
 ```
 
-### 1. Install the extension into your project
+### 2. Install at Global Level
+Install globally for all Pi projects on your machine:
 
 ```bash
 pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.8
 ```
 
-This adds an entry to your project's `.pi/settings.json` under `"packages"`. Verify it landed:
-
+Verify your installation:
 ```bash
-pi list
+pi list -a
 ```
 
-Expected output includes:
+---
 
+## ☁️ Built-in Ollama Cloud Provider & Models
+
+`pi-open-workflow` automatically registers the `ollama-cloud` provider with full reasoning and tool support.
+
+### Supported Models
+
+| Model Name | Model ID | Reasoning / Thinking | Context Window | Max Output |
+| :--- | :--- | :---: | :---: | :---: |
+| **Gemma 4 31B** | `gemma4:31b` | ✅ Yes (Text + Image) | 128k | 16k |
+| **Nemotron 3 Super** | `nemotron-3-super` | ✅ Yes | 128k | 16k |
+| **Nemotron 3 Nano 30B** | `nemotron-3-nano:30b` | ✅ Yes | 128k | 16k |
+| **Nemotron 3 Ultra** | `nemotron-3-ultra` | ✅ Yes | 128k | 16k |
+| **Qwen 3.5 397B** | `qwen3.5:397b` | ✅ Yes | 128k | 16k |
+| **GPT-oss 120B** | `gpt-oss:120b` | ✅ Yes | 128k | 16k |
+| **GPT-oss 20B** | `gpt-oss:20b` | ✅ Yes | 128k | 16k |
+| **Mistral Large 3 675B**| `mistral-large-3:675b` | ❌ No | 128k | 16k |
+
+### Usage & Setup
+
+1. **Set your API Key**:
+   ```bash
+   export OLLAMA_API_KEY="your-ollama-api-key"
+   # or export OLLAMA_CLOUD_API_KEY="your-ollama-api-key"
+   ```
+
+2. **List Available Models**:
+   ```bash
+   pi --list-models ollama-cloud
+   ```
+
+3. **Run with Model & High Thinking**:
+   ```bash
+   pi --model ollama-cloud/nemotron-3-super:high
+   ```
+
+*(To point to a custom or local Ollama host, export `OLLAMA_CLOUD_BASE_URL="http://localhost:11434/v1"`).*
+
+---
+
+## 🚀 End-to-End Workflow Guide
+
+### 1. Exploration in Plan Mode
+Start in safe, read-only mode to explore the codebase and draft requirements without accidental file changes:
 ```
-Project packages:
-  git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.4
-    <local clone path>
+/plan
+"Explore the auth module and analyze how token refresh is implemented."
 ```
 
-### 2. (Optional) External tools setup — web-search-backed tools
+### 2. Spec-Driven Execution with `/workflow`
+Switch to execution mode and run the structured pipeline:
+```
+/act
+/workflow Add JWT token rotation with a 15-minute expiration and Redis blacklist store.
+```
 
-Some `/openflow` research steps use `pi-mcp-adapter` + an Exa MCP server. If you don't need web research, skip this.
+1. **Phase 1: Clarify**: `ask_user_question` triggers if details are missing.
+2. **Phase 2: Research & Plan**: Synthesizes architecture and requirements.
+3. **Phase 3: Decompose**: `task_checklist` creates dependency-ordered tasks with priority tags (`[P0]`, `[P1]`).
+4. **Phase 4: Execute**: Executes tasks sequentially. The dashboard tracks progress in real time.
+5. **Phase 5: Verify**: Tests run automatically (`/autotest`) or manual verification is recorded (`record_verification`).
 
+### 3. Automated & Manual Verification
+* **Auto-Testing**: Toggle with `/autotest`. Every code edit runs your test suite (`npm test` / `pytest`).
+* **Manual Verification**: For database or infrastructure tasks:
+  ```
+  call record_verification with summary "Migration completed: verified 100 rows" and passed: true
+  ```
+
+### 4. Git Automation
+Once verified, generate commit messages and PR descriptions:
 ```bash
-pi install npm:pi-mcp-adapter
+git add -A
+```
+In Pi chat:
+```
+/commit
+/pr
 ```
 
-Add to `~/.config/mcp/mcp.json` (or your project's `.mcp.json`):
+---
 
-```json
-{
-  "mcpServers": {
-    "exa": {
-      "url": "https://mcp.exa.ai/mcp",
-      "lifecycle": "lazy"
-    }
-  }
-}
-```
+## 🛠️ Command & Tool Reference
 
-### 3. Try it without installing (local dev / clone-and-run)
+### Slash Commands & Prompt Templates
+
+| Command | Type | Description |
+| :--- | :--- | :--- |
+| `/workflow <goal>` | Slash Command | Runs the 5-stage spec-driven workflow (**Clarify → Plan → Decompose → Execute → Verify**). |
+| `/openflow <goal>` | Slash Command | Autonomous end-to-end goal orchestrator with research and self-healing loops. |
+| `/plan` | Slash Command | Switches to **Plan Mode** (read-only exploration and architecture drafting). |
+| `/act` | Slash Command | Switches to **Act Mode** (execution and file modification enabled). |
+| `/permission <mode>`| Slash Command | Adjusts security levels (`plan`, `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`). |
+| `/autotest` | Slash Command | Toggles the post-edit test execution loop. |
+| `/commit` | Slash Command | Analyzes git diffs and drafts Conventional Commits. |
+| `/pr` | Slash Command | Prepares a comprehensive GitHub pull request summary. |
+| `/plan-task <task>` | Prompt Template| Generates a structured dependency-linked task breakdown. |
+| `/search <query>` | Prompt Template| Searches external documentation and synthesizes citations. |
+
+### Agent Tools
+
+| Tool Name | Purpose | Key Parameters |
+| :--- | :--- | :--- |
+| `task_checklist` | Manages tasks and dependency gates | `action` (`add`, `update`, `list`, `clear`), `tasks`, `id`, `status`, `priority`, `dependsOn`, `force` |
+| `ask_user_question` | Asks interactive questions to resolve ambiguity | `questions` (`question`, `options`, `is_multi_select`) |
+| `record_verification` | Records manual verification to clear Phase 5 | `summary`, `passed` |
+| `Task` | Launches isolated child subagents | `role` (`explore`, `plan`, `general`), `task` |
+
+---
+
+## 🧪 Development & Testing
+
+Clone the repository and run the test suite locally:
 
 ```bash
 git clone https://github.com/rajivmehtaflex/pi-open-workflow.git
 cd pi-open-workflow
 npm install
 npm run build
-pi -e ./src/index.ts
+npm test
 ```
+
+Test runner uses Node.js native test runner (`node --test`).
 
 ---
 
-## Usage
+## 📄 License
 
-Start `pi` in a project where the extension is installed (or loaded via `-e`), then try these in order — each exercises a different subsystem end to end.
-
-### 1. Enter Plan Mode and draft a plan (read-only, no edits)
-
-```
-/plan
-```
-Ask a question, e.g. "Add a `priority` column to the sqlite task store." The agent explores and drafts a plan; file edits are blocked while `[PLAN]` shows in the footer.
-
-### 2. Switch to Act Mode and run the full spec-driven pipeline
-
-```
-/act
-/workflow Add a `priority` column ("P0"|"P1"|"P2") to the sqlite task_store table, update insertTask/listTasks to read/write it, and add node:test coverage.
-```
-Watch for:
-- `ask_user_question` firing in Phase 1 if the request is ambiguous — answer via the numbered dialog or type a custom answer.
-- `task_checklist` building a dependency-ordered task graph in Phase 3 (priority chips `[P0]`/`[P1]`, `dependsOn` gating).
-- The tabular dashboard widget rendering one row per task plus a five-stage pipeline strip (`Research`/`Plan`/`Act`/`Verify`/`Commit`) as tasks execute.
-- The statusline footer showing `[ACT: Act 3/5]`, the `blocked:N` badge if a task is dependency-blocked, and a ticking `[hh:mm:ss]` session clock.
-
-### 3. Manage tasks directly (without going through `/workflow`)
-
-Ask the agent, in plain chat:
-```
-Use task_checklist: add texts ["Write the migration", "Backfill existing rows"], the second depends on the first with priority P0. Then try to mark the second one inprogress before the first is done.
-```
-Expected: the second task is refused with `⛔ Task #2 is blocked by unfinished dependencies: #1` until #1 is marked `done` (or `force: true` is passed).
-
-### 4. Toggle the automated test loop
-
-```
-/autotest
-```
-After the next file edit, it automatically runs `npm test` (or `pytest`, if the project is Python) and feeds any failures back into the conversation.
-
-### 5. Record manual verification for a non-file-editing task
-
-For work that never edits a source file (a database migration, a data-seeding script), the automated test loop never fires. Ask the agent, in plain chat:
-```
-Once all tasks are done, call record_verification with summary "SELECT COUNT(*) FROM student = 100; all enrollment foreign keys valid" and passed: true.
-```
-Expected: Stage 4 ("Verify") flips from `▸ 4. Verify · tasks – · verification pending` to `✓ 4. Verify`.
-
-### 6. Generate a commit message from staged changes
-
-```bash
-git add -A
-```
-then in the `pi` session:
-```
-/commit
-```
-
-### 7. Draft a PR description
-
-```
-/pr
-```
-
-### 8. Launch an isolated research subagent
-
-Ask the agent:
-```
-Use the Task tool to explore how insertTask validates status, role: explore.
-```
-Watch the subagent telemetry panel appear in the dashboard (`🤖 [explore] Running...`) without cluttering your main conversation context.
-
----
-
-## Commands & Tools
-
-| Command / Tool | Type | Description |
-| :--- | :--- | :--- |
-| `/openflow` | Slash Command | Autonomous end-to-end master workflow (`/openflow <goal>`). |
-| `/workflow` | Slash Command | Spec-driven pipeline: Clarify → Research/Plan → Decompose → Execute → Verify (`/workflow <task>`). |
-| `/plan` | Slash Command | Enter Plan Mode (read-only exploration). Idempotent — safe to run when already in Plan Mode. |
-| `/act` | Slash Command | Enter Act Mode (execution: write & edit enabled). Idempotent. |
-| `/permission` | Slash Command | Set permission level (`plan`, `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`). |
-| `/autotest` | Slash Command | Toggle automatic post-edit test verification on or off. |
-| `/commit` | Slash Command | Inspect staged git changes and generate Conventional Commits. |
-| `/pr` | Slash Command | Prepare a structured pull request description for GitHub. |
-| `Task` | LLM Tool | Launch an isolated subagent with typed roles (`explore`, `plan`, `general`). |
-| `task_checklist` | LLM Tool | Programmatic task management: add (with `priority`, `dependsOn`), update, list, clear. Dependency-gated — `inprogress` is refused while dependencies are unfinished unless `force: true`. |
-| `ask_user_question` | LLM Tool | Ask the user 1-4 structured clarifying questions (2-4 options each, optional multi-select, free-text escape hatch) when requirements are ambiguous. |
-| `record_verification` | LLM Tool | Record manual verification (summary + pass/fail) when no automated test suite applies to the work just completed — e.g. a database/script-only task with no source-file edits. Requires every checklist task to be done first; sets the same gate the automated post-edit test loop would otherwise set. |
-
-## License
-
-MIT — see [LICENSE](./LICENSE).
+This project is licensed under the [MIT License](./LICENSE).
