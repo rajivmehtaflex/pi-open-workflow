@@ -1,6 +1,6 @@
 # pi-open-workflow
 
-[![Release](https://img.shields.io/badge/release-v0.1.8-blue.svg)](https://github.com/rajivmehtaflex/pi-open-workflow/releases/tag/v0.1.8)
+[![Release](https://img.shields.io/badge/release-v0.1.9-blue.svg)](https://github.com/rajivmehtaflex/pi-open-workflow/releases/tag/v0.1.9)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org)
 [![Pi Coding Agent](https://img.shields.io/badge/Pi-Coding%20Agent-purple.svg)](https://pi.dev)
@@ -36,14 +36,14 @@ A complete **open-source agentic workflow harness** for the [Pi Coding Agent](ht
 Install directly into your current workspace:
 
 ```bash
-pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.8 -l
+pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.9 -l
 ```
 
 ### 2. Install at Global Level
 Install globally for all Pi projects on your machine:
 
 ```bash
-pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.8
+pi install git:github.com/rajivmehtaflex/pi-open-workflow@v0.1.9
 ```
 
 Verify your installation:
