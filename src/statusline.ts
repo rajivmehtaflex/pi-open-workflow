@@ -30,18 +30,17 @@ export function registerStatusline(pi: ExtensionAPI, state: WorkflowState) {
           // Session clock
           const clock = isNarrow ? "" : theme.fg("dim", `${formatElapsed(Date.now() - state.sessionStartTime)} `);
 
-          // Stage & Mode Badge
+          // Stage & Mode Badges (separated to prevent redundant [ACT: Act 3/5] noise)
           const modeColor = state.mode === "plan" ? "warning" : "success";
-          let modeLabel = `[${state.mode.toUpperCase()}]`;
+          const modeBadge = theme.fg(modeColor, theme.bold(`[${state.mode.toUpperCase()}]`));
 
+          let stageBadge = "";
           if (state.currentStage > 0) {
             const stageName = STAGE_NAMES[state.currentStage - 1] || "Research";
-            modeLabel = isNarrow
-              ? `[${state.mode.toUpperCase()}: ${state.currentStage}/5]`
-              : `[${state.mode.toUpperCase()}: ${stageName} ${state.currentStage}/5]`;
+            stageBadge = isNarrow
+              ? theme.fg("accent", `[${state.currentStage}/5]`)
+              : theme.fg("accent", `[Stage ${state.currentStage}/5: ${stageName}]`);
           }
-
-          const modeBadge = theme.fg(modeColor, theme.bold(modeLabel));
 
           // Task Ratio
           const doneTasks = state.tasks.filter((t) => t.status === "done").length;
@@ -57,7 +56,7 @@ export function registerStatusline(pi: ExtensionAPI, state: WorkflowState) {
 
           const permBadge = isNarrow ? "" : theme.fg("dim", `(${state.permissionMode})`);
 
-          const left = ` ${theme.fg("accent", model)} ${modeBadge} ${permBadge} ${taskInfo} ${blockedInfo} ${subInfo}`;
+          const left = ` ${theme.fg("accent", model)} ${modeBadge}${stageBadge ? ` ${stageBadge}` : ""} ${permBadge} ${taskInfo} ${blockedInfo} ${subInfo}`;
           const right = `${clock}${theme.fg("dim", `[${bar}] ctx ${Math.round(pct)}%`)} `;
 
           const padLen = Math.max(1, width - visibleWidth(left) - visibleWidth(right));

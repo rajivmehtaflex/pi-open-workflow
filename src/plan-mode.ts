@@ -142,6 +142,9 @@ export function registerPlanMode(pi: ExtensionAPI, state: WorkflowState) {
 
         // Stage advances only on real work — never on keystrokes.
         if (p.status === "inprogress" && state.currentStage < 3) state.currentStage = 3; // Act stage: work has begun
+        if (p.status === "inprogress" || p.status === "done") {
+          target.stage = Math.max(target.stage ?? 2, state.currentStage);
+        }
 
         // Apply pure workflow transition policy using the live checklist and test state.
         const transitioned = advanceAfterTaskUpdate({
